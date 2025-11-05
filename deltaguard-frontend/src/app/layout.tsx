@@ -1,20 +1,32 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { Web3Provider } from "@/components/providers/Web3Provider";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
   title: "DeltaGuard - Predictive Impermanent Loss Management",
-  description: "The first DeFi system that predicts Impermanent Loss using Black-Scholes options pricing theory and automatically protects DAO treasuries.",
-  keywords: ["DeFi", "Impermanent Loss", "IL Prediction", "DAO Treasury", "Uniswap V4", "Octant", "Black-Scholes"],
+  description:
+    "The first DeFi system that predicts Impermanent Loss using Black-Scholes options pricing theory and automatically protects DAO treasuries.",
+  keywords: [
+    "DeFi",
+    "Impermanent Loss",
+    "IL Prediction",
+    "DAO Treasury",
+    "Uniswap V4",
+    "Octant",
+    "Black-Scholes",
+  ],
   authors: [{ name: "DeltaGuard Team" }],
   openGraph: {
     title: "DeltaGuard - Predictive IL Management",
-    description: "Stop losing money to impermanent loss. 73% prediction accuracy using research-grade mathematics.",
+    description:
+      "Stop losing money to impermanent loss. 73% prediction accuracy using research-grade mathematics.",
     type: "website",
     url: "https://deltaguard.xyz",
   },
@@ -32,9 +44,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+        <ThemeProvider>
+          <Web3Provider>{children}</Web3Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

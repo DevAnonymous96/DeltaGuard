@@ -1,58 +1,64 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { 
-  TrendingUp, 
-  Shield, 
-  RefreshCw, 
-  Eye, 
-  Heart, 
-  Layers 
-} from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { motion } from "framer-motion";
+import {
+  TrendingUp,
+  Shield,
+  RefreshCw,
+  Eye,
+  Heart,
+  Layers,
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const features = [
   {
     icon: TrendingUp,
-    title: 'Predictive IL Analysis',
-    description: 'Black-Scholes-based forecasting with 73% accuracy. Know your IL risk before deploying.',
-    gradient: 'from-purple-500 to-purple-700',
-    size: 'large', // Takes 2 columns
+    title: "Predictive IL Analysis",
+    description:
+      "Black-Scholes-based forecasting with 73% accuracy. Know your IL risk before deploying.",
+    gradient: "from-purple-500 to-purple-700",
+    size: "large", // Takes 2 columns
   },
   {
     icon: RefreshCw,
-    title: 'Automated Rebalancing',
-    description: 'Switch to safe lending when IL risk exceeds threshold. No manual intervention needed.',
-    gradient: 'from-blue-500 to-blue-700',
-    size: 'medium',
+    title: "Automated Rebalancing",
+    description:
+      "Switch to safe lending when IL risk exceeds threshold. No manual intervention needed.",
+    gradient: "from-blue-500 to-blue-700",
+    size: "medium",
   },
   {
     icon: Eye,
-    title: 'Real-time Risk Monitoring',
-    description: 'Live position health tracking with instant alerts for high-risk situations.',
-    gradient: 'from-cyan-500 to-cyan-700',
-    size: 'medium',
+    title: "Real-time Risk Monitoring",
+    description:
+      "Live position health tracking with instant alerts for high-risk situations.",
+    gradient: "from-cyan-500 to-cyan-700",
+    size: "medium",
   },
   {
     icon: Heart,
-    title: 'Octant Integration',
-    description: 'Auto-donate optimized yields to public goods. Maximize ecosystem impact.',
-    gradient: 'from-pink-500 to-pink-700',
-    size: 'medium',
+    title: "Octant Integration",
+    description:
+      "Auto-donate optimized yields to public goods. Maximize ecosystem impact.",
+    gradient: "from-pink-500 to-pink-700",
+    size: "medium",
   },
   {
     icon: Layers,
-    title: 'Multi-Pool Support',
-    description: 'Deploy across multiple Uniswap V4 pools with intelligent allocation.',
-    gradient: 'from-green-500 to-green-700',
-    size: 'medium',
+    title: "Multi-Pool Support",
+    description:
+      "Deploy across multiple Uniswap V4 pools with intelligent allocation.",
+    gradient: "from-green-500 to-green-700",
+    size: "medium",
   },
   {
     icon: Shield,
-    title: 'Historical Analytics',
-    description: 'Track prediction accuracy, IL prevented, and strategy performance over time.',
-    gradient: 'from-orange-500 to-orange-700',
-    size: 'large',
+    title: "Historical Analytics",
+    description:
+      "Track prediction accuracy, IL prevented, and strategy performance over time.",
+    gradient: "from-orange-500 to-orange-700",
+    size: "large",
   },
 ];
 
@@ -69,13 +75,14 @@ export function FeaturesGrid() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-            Everything You Need to{' '}
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Everything You Need to{" "}
+            <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               Protect Your Treasury
             </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Production-ready features designed for DAO treasuries and DeFi protocols
+            Production-ready features designed for DAO treasuries and DeFi
+            protocols
           </p>
         </motion.div>
 
@@ -83,8 +90,8 @@ export function FeaturesGrid() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((feature, index) => {
             const Icon = feature.icon;
-            const isLarge = feature.size === 'large';
-            
+            const isLarge = feature.size === "large";
+
             return (
               <motion.div
                 key={feature.title}
@@ -92,15 +99,19 @@ export function FeaturesGrid() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={isLarge ? 'md:col-span-2' : ''}
+                className={isLarge ? "md:col-span-2" : ""}
               >
                 <Card className="h-full group hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border-primary/20 hover:border-primary/40 overflow-hidden relative">
                   {/* Gradient overlay on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                  
+                  <div
+                    className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+                  />
+
                   <CardContent className="p-6 relative z-10">
                     {/* Icon */}
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-linear-to-br ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+                    >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
 
@@ -144,9 +155,11 @@ export function FeaturesGrid() {
           </p>
           <button
             onClick={() => {
-              document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' });
+              document
+                .getElementById("simulator")
+                ?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-primary text-white font-medium hover:shadow-xl hover:scale-105 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-linear-primary text-white font-medium hover:shadow-xl hover:scale-105 transition-all"
           >
             Try the IL Simulator
             <TrendingUp className="w-4 h-4" />

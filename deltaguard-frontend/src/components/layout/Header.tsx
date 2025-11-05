@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Shield, Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Shield, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,15 +16,15 @@ export function Header() {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navItems = [
-    { label: 'Problem', href: '#problem' },
-    { label: 'Solution', href: '#how-it-works' },
-    { label: 'Features', href: '#features' },
-    { label: 'Docs', href: '/docs' },
+    { label: "Problem", href: "#problem" },
+    { label: "Solution", href: "#how-it-works" },
+    { label: "Features", href: "#features" },
+    { label: "Docs", href: "/docs" },
   ];
 
   return (
@@ -32,19 +33,17 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'glass shadow-lg' 
-          : 'bg-transparent'
+        isScrolled ? "glass shadow-lg" : "bg-transparent"
       }`}
     >
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-lg bg-linear-primary flex items-center justify-center group-hover:scale-110 transition-transform">
               <Shield className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               DeltaGuard
             </span>
           </Link>
@@ -64,15 +63,14 @@ export function Header() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
             <Button
               variant="ghost"
-              onClick={() => window.location.href = '/simulator'}
+              onClick={() => (window.location.href = "/simulator")}
             >
               Try Simulator
             </Button>
-            <Button
-              onClick={() => window.location.href = '/dashboard'}
-            >
+            <Button onClick={() => (window.location.href = "/dashboard")}>
               Launch App
             </Button>
           </div>
@@ -94,7 +92,7 @@ export function Header() {
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden py-4 border-t border-border"
           >
@@ -113,7 +111,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    window.location.href = '/simulator';
+                    window.location.href = "/simulator";
                     setIsMobileMenuOpen(false);
                   }}
                   className="w-full"
@@ -122,7 +120,7 @@ export function Header() {
                 </Button>
                 <Button
                   onClick={() => {
-                    window.location.href = '/dashboard';
+                    window.location.href = "/dashboard";
                     setIsMobileMenuOpen(false);
                   }}
                   className="w-full"

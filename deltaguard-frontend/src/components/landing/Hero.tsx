@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { ArrowRight, Shield, TrendingUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-import { formatUSD } from '@/lib/utils';
+import { motion } from "framer-motion";
+import { ArrowRight, Shield, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { formatUSD } from "@/lib/utils";
 
 export function Hero() {
   const [lostToday, setLostToday] = useState(0);
@@ -16,7 +16,7 @@ export function Hero() {
     const steps = 60;
     const increment = targetAmount / steps;
     let current = 0;
-    
+
     const timer = setInterval(() => {
       current += increment;
       if (current >= targetAmount) {
@@ -33,13 +33,13 @@ export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-background gradient-animate" />
-      
+      <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-blue-900/20 to-background gradient-animate" />
+
       {/* Floating math symbols */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute text-6xl text-primary/10 font-mono"
-          style={{ top: '10%', left: '15%' }}
+          style={{ top: "10%", left: "15%" }}
           animate={{
             y: [0, -30, 0],
             rotate: [0, 10, 0],
@@ -47,14 +47,14 @@ export function Hero() {
           transition={{
             duration: 8,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           σ
         </motion.div>
         <motion.div
           className="absolute text-5xl text-secondary/10 font-mono"
-          style={{ top: '20%', right: '20%' }}
+          style={{ top: "20%", right: "20%" }}
           animate={{
             y: [0, 30, 0],
             rotate: [0, -10, 0],
@@ -62,28 +62,28 @@ export function Hero() {
           transition={{
             duration: 10,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           ∫
         </motion.div>
         <motion.div
           className="absolute text-7xl text-accent/10 font-mono"
-          style={{ bottom: '15%', left: '25%' }}
+          style={{ bottom: "15%", left: "25%" }}
           animate={{
             y: [0, -25, 0],
           }}
           transition={{
             duration: 7,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           √
         </motion.div>
         <motion.div
           className="absolute text-4xl text-primary/10 font-mono"
-          style={{ bottom: '30%', right: '15%' }}
+          style={{ bottom: "30%", right: "15%" }}
           animate={{
             y: [0, 20, 0],
             rotate: [0, 15, 0],
@@ -91,7 +91,7 @@ export function Hero() {
           transition={{
             duration: 9,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           Δ
@@ -119,8 +119,8 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
           >
-            Stop Losing Money to{' '}
-            <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+            Stop Losing Money to{" "}
+            <span className="bg-linear-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
               Impermanent Loss
             </span>
           </motion.h1>
@@ -132,8 +132,10 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto"
           >
-            The first DeFi system that <span className="text-foreground font-semibold">predicts</span> Impermanent Loss 
-            using Black-Scholes options pricing theory and automatically protects DAO treasuries.
+            The first DeFi system that{" "}
+            <span className="text-foreground font-semibold">predicts</span>{" "}
+            Impermanent Loss using Black-Scholes options pricing theory and
+            automatically protects DAO treasuries.
           </motion.p>
 
           {/* Live counter */}
@@ -168,18 +170,22 @@ export function Hero() {
               variant="glow"
               className="group"
               onClick={() => {
-                document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' });
+                document
+                  .getElementById("simulator")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               Predict Your IL Risk
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            
+
             <Button
               size="xl"
               variant="outline"
               onClick={() => {
-                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                document
+                  .getElementById("how-it-works")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
               <TrendingUp className="w-5 h-5" />

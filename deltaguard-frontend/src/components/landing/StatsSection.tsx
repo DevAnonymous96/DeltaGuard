@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { motion, useInView } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { formatUSD, formatNumber } from '@/lib/utils';
-import { DollarSign, Target, Heart, TrendingUp } from 'lucide-react';
+import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { formatUSD, formatNumber } from "@/lib/utils";
+import { DollarSign, Target, Heart, TrendingUp } from "lucide-react";
 
 interface StatProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -18,16 +18,16 @@ interface StatProps {
   delay?: number;
 }
 
-function AnimatedStat({ 
-  icon: Icon, 
-  label, 
-  value, 
-  suffix = '', 
-  prefix = '',
+function AnimatedStat({
+  icon: Icon,
+  label,
+  value,
+  suffix = "",
+  prefix = "",
   decimals = 0,
   formatter,
   color,
-  delay = 0 
+  delay = 0,
 }: StatProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ function AnimatedStat({
     return () => clearInterval(timer);
   }, [isInView, value]);
 
-  const displayValue = formatter 
+  const displayValue = formatter
     ? formatter(count)
     : `${prefix}${formatNumber(count, decimals)}${suffix}`;
 
@@ -69,18 +69,18 @@ function AnimatedStat({
       <Card className="border-primary/20 hover:border-primary/40 transition-all hover:shadow-xl">
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center`}>
+            <div
+              className={`w-12 h-12 rounded-xl bg-linear-to-br ${color} flex items-center justify-center`}
+            >
               <Icon className="w-6 h-6 text-white" />
             </div>
           </div>
-          
+
           <div className="text-3xl sm:text-4xl font-bold mb-2 number-counter">
             {displayValue}
           </div>
-          
-          <p className="text-sm text-muted-foreground">
-            {label}
-          </p>
+
+          <p className="text-sm text-muted-foreground">{label}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -91,35 +91,35 @@ export function StatsSection() {
   const stats: StatProps[] = [
     {
       icon: DollarSign,
-      label: 'Total Value Protected',
+      label: "Total Value Protected",
       value: 5200000,
       formatter: (v) => formatUSD(v, 1),
-      color: 'from-green-500 to-green-700',
+      color: "from-green-500 to-green-700",
       delay: 0,
     },
     {
       icon: Target,
-      label: 'IL Predictions Made',
+      label: "IL Predictions Made",
       value: 12547,
       formatter: (v) => formatNumber(v, 0),
-      color: 'from-blue-500 to-blue-700',
+      color: "from-blue-500 to-blue-700",
       delay: 0.1,
     },
     {
       icon: Heart,
-      label: 'Public Goods Funded',
+      label: "Public Goods Funded",
       value: 186000,
       formatter: (v) => formatUSD(v, 0),
-      color: 'from-pink-500 to-pink-700',
+      color: "from-pink-500 to-pink-700",
       delay: 0.2,
     },
     {
       icon: TrendingUp,
-      label: 'Average Prediction Accuracy',
+      label: "Average Prediction Accuracy",
       value: 73,
-      suffix: '%',
+      suffix: "%",
       decimals: 0,
-      color: 'from-purple-500 to-purple-700',
+      color: "from-purple-500 to-purple-700",
       delay: 0.3,
     },
   ];
@@ -136,8 +136,8 @@ export function StatsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-            Proven Results{' '}
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Proven Results{" "}
+            <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
               in Production
             </span>
           </h2>
@@ -171,20 +171,62 @@ export function StatsSection() {
 
               {/* Simple line chart SVG */}
               <div className="h-64 bg-muted/50 rounded-lg relative overflow-hidden">
-                <svg className="w-full h-full" viewBox="0 0 800 256" preserveAspectRatio="none">
+                <svg
+                  className="w-full h-full"
+                  viewBox="0 0 800 256"
+                  preserveAspectRatio="none"
+                >
                   {/* Grid lines */}
-                  <line x1="0" y1="64" x2="800" y2="64" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" />
-                  <line x1="0" y1="128" x2="800" y2="128" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" />
-                  <line x1="0" y1="192" x2="800" y2="192" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" />
-                  
+                  <line
+                    x1="0"
+                    y1="64"
+                    x2="800"
+                    y2="64"
+                    stroke="currentColor"
+                    strokeOpacity="0.1"
+                    strokeWidth="1"
+                  />
+                  <line
+                    x1="0"
+                    y1="128"
+                    x2="800"
+                    y2="128"
+                    stroke="currentColor"
+                    strokeOpacity="0.1"
+                    strokeWidth="1"
+                  />
+                  <line
+                    x1="0"
+                    y1="192"
+                    x2="800"
+                    y2="192"
+                    stroke="currentColor"
+                    strokeOpacity="0.1"
+                    strokeWidth="1"
+                  />
+
                   {/* Area fill */}
                   <defs>
-                    <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="rgb(139, 92, 246)" stopOpacity="0.3" />
-                      <stop offset="100%" stopColor="rgb(139, 92, 246)" stopOpacity="0" />
+                    <linearGradient
+                      id="areaGradient"
+                      x1="0%"
+                      y1="0%"
+                      x2="0%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor="rgb(139, 92, 246)"
+                        stopOpacity="0.3"
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="rgb(139, 92, 246)"
+                        stopOpacity="0"
+                      />
                     </linearGradient>
                   </defs>
-                  
+
                   <motion.path
                     initial={{ pathLength: 0 }}
                     whileInView={{ pathLength: 1 }}
@@ -193,7 +235,7 @@ export function StatsSection() {
                     d="M0,240 L100,220 L200,190 L300,170 L400,140 L500,120 L600,90 L700,70 L800,40 L800,256 L0,256 Z"
                     fill="url(#areaGradient)"
                   />
-                  
+
                   {/* Line */}
                   <motion.path
                     initial={{ pathLength: 0 }}
@@ -206,7 +248,7 @@ export function StatsSection() {
                     strokeWidth="3"
                   />
                 </svg>
-                
+
                 {/* Labels */}
                 <div className="absolute bottom-4 left-4 text-xs text-muted-foreground">
                   Day 1
@@ -227,7 +269,9 @@ export function StatsSection() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-destructive/50" />
-                  <span className="text-muted-foreground">Traditional POL (baseline)</span>
+                  <span className="text-muted-foreground">
+                    Traditional POL (baseline)
+                  </span>
                 </div>
               </div>
             </CardContent>

@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ControlPanel } from '@/components/simulator/ControlPanel';
-import { ResultsPanel } from '@/components/simulator/ResultsPanel';
-import { ILVisualization } from '@/components/simulator/ILVisualization';
-import { useSimulatorStore } from '@/store/useSimulatorStore';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ControlPanel } from "@/components/simulator/ControlPanel";
+import { ResultsPanel } from "@/components/simulator/ResultsPanel";
+import { ILVisualization } from "@/components/simulator/ILVisualization";
+import { useSimulatorStore } from "@/store/useSimulatorStore";
 import {
   calculateExpectedIL,
   calculateExitProbability,
   calculateConfidence,
   calculateRebalanceThreshold,
-} from '@/lib/calculations/ilCalculator';
-import { Calculator, ArrowLeft, Info } from 'lucide-react';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
-import Link from 'next/link';
+} from "@/lib/calculations/ilCalculator";
+import { Calculator, ArrowLeft, Info } from "lucide-react";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import Link from "next/link";
 
 export default function SimulatorPage() {
   const [isCalculating, setIsCalculating] = useState(false);
-  
+
   const {
     currentPrice,
     lowerBound,
@@ -35,7 +35,7 @@ export default function SimulatorPage() {
     setIsCalculating(true);
 
     // Simulate calculation delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     try {
       // Calculate expected IL
@@ -66,15 +66,15 @@ export default function SimulatorPage() {
       );
 
       // Determine recommendation level
-      let recommendation: 'safe' | 'moderate' | 'high' | 'critical';
+      let recommendation: "safe" | "moderate" | "high" | "critical";
       if (expectedIL < 2) {
-        recommendation = 'safe';
+        recommendation = "safe";
       } else if (expectedIL < 5) {
-        recommendation = 'moderate';
+        recommendation = "moderate";
       } else if (expectedIL < 10) {
-        recommendation = 'high';
+        recommendation = "high";
       } else {
-        recommendation = 'critical';
+        recommendation = "critical";
       }
 
       // Set result
@@ -88,7 +88,7 @@ export default function SimulatorPage() {
         calculatedAt: Date.now(),
       });
     } catch (error) {
-      console.error('Prediction error:', error);
+      console.error("Prediction error:", error);
     } finally {
       setIsCalculating(false);
     }
@@ -97,7 +97,7 @@ export default function SimulatorPage() {
   return (
     <>
       <Header />
-      
+
       <main className="min-h-screen pt-20 pb-12 flex items-center justify-center">
         <div className="container px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
@@ -113,17 +113,18 @@ export default function SimulatorPage() {
               <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Link> */}
-            
+
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-3xl sm:text-4xl font-bold mb-2">
                   IL Simulator
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  Predict impermanent loss using Black-Scholes options pricing theory
+                  Predict impermanent loss using Black-Scholes options pricing
+                  theory
                 </p>
               </div>
-              
+
               <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20">
                 <Info className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium text-primary">
@@ -143,13 +144,15 @@ export default function SimulatorPage() {
             <div className="flex items-start gap-3">
               <Info className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
               <div className="text-sm">
-                <p className="font-medium mb-1">
-                  How it works:
-                </p>
+                <p className="font-medium mb-1">How it works:</p>
                 <p className="text-muted-foreground">
-                  Adjust the parameters on the left, view the IL curve in the center, 
-                  and click <span className="font-semibold">&quot;Run Prediction&quot;</span> to see 
-                  expected IL, exit probability, and whether you should provide liquidity or switch to lending.
+                  Adjust the parameters on the left, view the IL curve in the
+                  center, and click{" "}
+                  <span className="font-semibold">
+                    &quot;Run Prediction&quot;
+                  </span>{" "}
+                  to see expected IL, exit probability, and whether you should
+                  provide liquidity or switch to lending.
                 </p>
               </div>
             </div>
@@ -175,7 +178,7 @@ export default function SimulatorPage() {
               className="lg:col-span-6 space-y-6"
             >
               <ILVisualization />
-              
+
               {/* Run Prediction Button */}
               <Button
                 size="xl"
@@ -202,10 +205,22 @@ export default function SimulatorPage() {
                   💡 Understanding the Chart
                 </h4>
                 <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• <span className="font-medium">IL Curve (red)</span>: Shows IL percentage at different price points</li>
-                  <li>• <span className="font-medium">Purple box</span>: Your selected price range</li>
-                  <li>• <span className="font-medium">Vertical line</span>: Current price position</li>
-                  <li>• <span className="font-medium">Wider range</span> = Lower IL risk but potentially fewer fees</li>
+                  <li>
+                    • <span className="font-medium">IL Curve (red)</span>: Shows
+                    IL percentage at different price points
+                  </li>
+                  <li>
+                    • <span className="font-medium">Purple box</span>: Your
+                    selected price range
+                  </li>
+                  <li>
+                    • <span className="font-medium">Vertical line</span>:
+                    Current price position
+                  </li>
+                  <li>
+                    • <span className="font-medium">Wider range</span> = Lower
+                    IL risk but potentially fewer fees
+                  </li>
                 </ul>
               </div>
             </motion.div>
@@ -234,14 +249,14 @@ export default function SimulatorPage() {
                 Historical Accuracy
               </div>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
               <div className="text-2xl font-bold text-primary mb-1">12,547</div>
               <div className="text-sm text-muted-foreground">
                 Predictions Made
               </div>
             </div>
-            
+
             <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
               <div className="text-2xl font-bold text-primary mb-1">$5.2M</div>
               <div className="text-sm text-muted-foreground">
@@ -255,18 +270,19 @@ export default function SimulatorPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="mt-12 p-8 rounded-xl bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 text-center"
+            className="mt-12 p-8 rounded-xl bg-linear-to-r from-primary/10 to-secondary/10 border border-primary/20 text-center"
           >
             <h3 className="text-2xl font-bold mb-2">
               Ready to Protect Your Liquidity?
             </h3>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Deploy with confidence using DeltaGuard&apos;s intelligent POL system. 
-              Automatic rebalancing, continuous monitoring, and integration with Octant for public goods funding.
+              Deploy with confidence using DeltaGuard&apos;s intelligent POL
+              system. Automatic rebalancing, continuous monitoring, and
+              integration with Octant for public goods funding.
             </p>
             <Button
               size="lg"
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => (window.location.href = "/dashboard")}
             >
               Launch Dashboard
             </Button>

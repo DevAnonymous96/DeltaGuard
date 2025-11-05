@@ -1,24 +1,27 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { AlertTriangle, TrendingDown, X } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
-import { calculateIL, formatPercent, formatUSD } from '@/lib/utils';
+import { motion } from "framer-motion";
+import { AlertTriangle, TrendingDown, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { calculateIL, formatPercent, formatUSD } from "@/lib/utils";
 
 export function ProblemSection() {
   const [initialPrice, setInitialPrice] = useState(2000);
   const [finalPrice, setFinalPrice] = useState(3000);
-  
+
   const ilPercent = calculateIL(initialPrice, finalPrice);
   const priceChange = ((finalPrice - initialPrice) / initialPrice) * 100;
-  
+
   // Example: $1M deposit
   const depositAmount = 1000000;
   const ilLoss = (ilPercent / 100) * depositAmount;
 
   return (
-    <section id="problem" className="py-20 sm:py-32 relative flex items-center justify-center">
+    <section
+      id="problem"
+      className="py-20 sm:py-32 relative flex items-center justify-center"
+    >
       <div className="container px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <motion.div
@@ -33,12 +36,12 @@ export function ProblemSection() {
             <span>The Problem</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-            DAOs Are Losing{' '}
-            <span className="text-destructive">Millions</span> to IL
+            DAOs Are Losing <span className="text-destructive">Millions</span>{" "}
+            to IL
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Current Protocol-Owned Liquidity (POL) strategies are naive and reactive. 
-            They deploy blindly and hope fee revenue exceeds losses.
+            Current Protocol-Owned Liquidity (POL) strategies are naive and
+            reactive. They deploy blindly and hope fee revenue exceeds losses.
           </p>
         </motion.div>
 
@@ -93,14 +96,23 @@ export function ProblemSection() {
                 {/* Results */}
                 <div className="pt-4 border-t border-border space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Price Change:</span>
-                    <span className={`font-semibold ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {priceChange >= 0 ? '+' : ''}{formatPercent(priceChange, 1)}
+                    <span className="text-sm text-muted-foreground">
+                      Price Change:
+                    </span>
+                    <span
+                      className={`font-semibold ${
+                        priceChange >= 0 ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {priceChange >= 0 ? "+" : ""}
+                      {formatPercent(priceChange, 1)}
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Impermanent Loss:</span>
+                    <span className="text-sm text-muted-foreground">
+                      Impermanent Loss:
+                    </span>
                     <span className="text-xl font-bold text-destructive">
                       {formatPercent(ilPercent, 2)}
                     </span>
@@ -118,10 +130,22 @@ export function ProblemSection() {
 
                 {/* Visual IL Curve */}
                 <div className="h-40 bg-muted/50 rounded-lg relative overflow-hidden">
-                  <svg className="w-full h-full" viewBox="0 0 400 160" preserveAspectRatio="none">
+                  <svg
+                    className="w-full h-full"
+                    viewBox="0 0 400 160"
+                    preserveAspectRatio="none"
+                  >
                     {/* Grid lines */}
-                    <line x1="0" y1="80" x2="400" y2="80" stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" />
-                    
+                    <line
+                      x1="0"
+                      y1="80"
+                      x2="400"
+                      y2="80"
+                      stroke="currentColor"
+                      strokeOpacity="0.1"
+                      strokeWidth="1"
+                    />
+
                     {/* IL Curve */}
                     <path
                       d={generateILCurve()}
@@ -130,17 +154,17 @@ export function ProblemSection() {
                       strokeWidth="3"
                       className="animate-fade-in"
                     />
-                    
+
                     {/* Current point marker */}
                     <circle
                       cx={(finalPrice / initialPrice) * 100}
-                      cy={80 - (ilPercent * 2)}
+                      cy={80 - ilPercent * 2}
                       r="5"
                       fill="rgb(239, 68, 68)"
                       className="animate-pulse"
                     />
                   </svg>
-                  
+
                   {/* Labels */}
                   <div className="absolute bottom-2 left-2 text-xs text-muted-foreground">
                     0.5x price
@@ -171,7 +195,8 @@ export function ProblemSection() {
                   <div>
                     <h3 className="text-2xl font-bold mb-1">42% Average IL</h3>
                     <p className="text-sm text-muted-foreground">
-                      In high volatility periods, LPs regularly experience double-digit impermanent loss
+                      In high volatility periods, LPs regularly experience
+                      double-digit impermanent loss
                     </p>
                   </div>
                 </div>
@@ -186,9 +211,12 @@ export function ProblemSection() {
                     <TrendingDown className="w-6 h-6 text-destructive" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold mb-1">$XXM Lost Monthly</h3>
+                    <h3 className="text-2xl font-bold mb-1">
+                      $XXM Lost Monthly
+                    </h3>
                     <p className="text-sm text-muted-foreground">
-                      DAO treasuries hemorrhage value through poorly managed liquidity positions
+                      DAO treasuries hemorrhage value through poorly managed
+                      liquidity positions
                     </p>
                   </div>
                 </div>
@@ -205,7 +233,8 @@ export function ProblemSection() {
                   <div>
                     <h3 className="text-2xl font-bold mb-1">100% Reactive</h3>
                     <p className="text-sm text-muted-foreground">
-                      Current strategies only respond AFTER losses occur. No prediction, no prevention.
+                      Current strategies only respond AFTER losses occur. No
+                      prediction, no prevention.
                     </p>
                   </div>
                 </div>
@@ -213,11 +242,13 @@ export function ProblemSection() {
             </Card>
 
             {/* Real example callout */}
-            <div className="p-6 rounded-xl bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20">
+            <div className="p-6 rounded-xl bg-linear-to-r from-destructive/10 to-destructive/5 border border-destructive/20">
               <p className="text-sm font-medium mb-2">Real Example:</p>
               <div className="space-y-1 text-sm font-mono">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Optimism DAO deploys:</span>
+                  <span className="text-muted-foreground">
+                    Optimism DAO deploys:
+                  </span>
                   <span>$20M</span>
                 </div>
                 <div className="flex justify-between">
@@ -225,7 +256,9 @@ export function ProblemSection() {
                   <span className="text-green-500">+8%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Impermanent Loss:</span>
+                  <span className="text-muted-foreground">
+                    Impermanent Loss:
+                  </span>
                   <span className="text-destructive">-12%</span>
                 </div>
                 <div className="h-px bg-border my-2" />
@@ -245,14 +278,15 @@ export function ProblemSection() {
 // Helper function to generate IL curve path
 function generateILCurve(): string {
   const points: [number, number][] = [];
-  
+
   for (let i = 0; i <= 400; i += 10) {
-    const priceRatio = (i / 200); // 0.5x to 2x
-    const il = Math.abs((2 * Math.sqrt(priceRatio)) / (1 + priceRatio) - 1) * 100;
+    const priceRatio = i / 200; // 0.5x to 2x
+    const il =
+      Math.abs((2 * Math.sqrt(priceRatio)) / (1 + priceRatio) - 1) * 100;
     const x = i;
-    const y = 80 - (il * 2); // Invert Y and scale
+    const y = 80 - il * 2; // Invert Y and scale
     points.push([x, y]);
   }
-  
-  return `M ${points.map(([x, y]) => `${x},${y}`).join(' L ')}`;
+
+  return `M ${points.map(([x, y]) => `${x},${y}`).join(" L ")}`;
 }
