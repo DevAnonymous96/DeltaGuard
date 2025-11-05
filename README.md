@@ -1,7 +1,7 @@
 # 🧠 DeltaGuard: Intelligent POL System | Predictive Impermanent Loss Management
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue)](https://soliditylang.org/)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.30-blue)](https://soliditylang.org/)
 [![Foundry](https://img.shields.io/badge/Built%20with-Foundry-red)](https://getfoundry.sh/)
 [![Uniswap V4](https://img.shields.io/badge/Uniswap-V4-pink)](https://uniswap.org/)
 
