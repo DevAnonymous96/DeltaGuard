@@ -18,7 +18,7 @@ export const SUPPORTED_CHAINS = [sepolia, mainnet] as const;
 // wagmi configuration
 export const wagmiConfig = getDefaultConfig({
   appName: 'DeltaGuard',
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '7262761f32f67452fda728e2a9097d84',
   chains: SUPPORTED_CHAINS,
   ssr: true,
 });
