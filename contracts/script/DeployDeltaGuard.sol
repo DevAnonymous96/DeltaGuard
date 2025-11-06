@@ -1,217 +1,223 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Script.sol";
-import {ILPredictor} from "../src/core/ILPredictor.sol";
-import {VolatilityOracle} from "../src/core/VolatilityOracle.sol";
-import {IntelligentPOLHook} from "../src/hooks/IntelligentPOLHook.sol";
-import {OctantPOLStrategy} from "../src/strategy/OctantPOLStrategy.sol";
+import {Script} from "forge-std/Script.sol";
+import {console2} from "forge-std/console2.sol";
 
-// ============================================
-// DEPLOYMENT SCRIPT
-// ============================================
+import {IPoolManager} from "@uniswap/v4-core/src/interfaces/IPoolManager.sol";
+import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
+import {Currency} from "@uniswap/v4-core/src/types/Currency.sol";
+import {Hooks} from "@uniswap/v4-core/src/libraries/Hooks.sol";
+
+import "../src/core/VolatilityOracle.sol";
+import "../src/core/ILPredictor.sol";
+import "../src/hooks/IntelligentPOLHook.sol";
+import "../src/strategy/OctantPOLStrategy.sol";
+import "../src/helper/ConfigHelper.sol";
+import "../src/helper/SimulationHelper.sol";
 
 /**
- * @title DeployDeltaGuard
- * @notice Deployment script for DeltaGuard system
- * @dev Run with: forge script script/Deploy.s.sol:DeployDeltaGuard --rpc-url <RPC> --broadcast
+ * @title Deploy Script for DeltaGuard
+ * @notice Deploys all contracts in correct order with proper configuration
+ * @dev Run with: forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
  */
-contract DeployDeltaGuard is Script {
+contract DeployScript is Script {
     // ============ Configuration ============
     
-    // Chainlink Price Feeds (Sepolia Testnet)
-    address constant CHAINLINK_ETH_USD_SEPOLIA = 0x694AA1769357215DE4FAC081bf1f309aDC325306;
+    // Addresses (update for your network)
+    address constant CHAINLINK_ETH_USD = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419; // Mainnet
+    address constant POOL_MANAGER = address(0); // TODO: Add V4 PoolManager
+    address constant TOKEN0 = address(0); // TODO: Add token0 (e.g., WETH)
+    address constant TOKEN1 = address(0); // TODO: Add token1 (e.g., USDC)
     
-    // Uniswap V4 (update when available on testnet)
-    address constant POOL_MANAGER_SEPOLIA = address(0); // TODO: Update
+    // Pool parameters
+    uint24 constant FEE = 3000; // 0.3% fee
+    int24 constant TICK_SPACING = 60;
     
-    // Tokens (Sepolia)
-    address constant WETH_SEPOLIA = 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9;
-    address constant USDC_SEPOLIA = 0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8;
-    
-    // Configuration values
+    // Oracle parameters
     uint256 constant MAX_STALENESS = 1 hours;
-    uint256 constant MAX_HISTORICAL_PRICES = 30;
+    uint256 constant MAX_HISTORICAL_PRICES = 90; // 90 days
     
-    // ============ Main Deployment Function ============
+    // ============ Deployment ============
     
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
         
-        console.log("==========================================");
-        console.log("Deploying DeltaGuard System");
-        console.log("==========================================");
-        console.log("Deployer:", deployer);
-        console.log("Balance:", deployer.balance);
-        console.log("");
+        console2.log("Deploying DeltaGuard contracts...");
+        console2.log("Deployer:", deployer);
+        console2.log("Chain ID:", block.chainid);
+        console2.log("");
         
         vm.startBroadcast(deployerPrivateKey);
         
-        // Step 1: Deploy VolatilityOracle
-        console.log("1. Deploying VolatilityOracle...");
+        // 1. Deploy VolatilityOracle
+        console2.log("1. Deploying VolatilityOracle...");
         VolatilityOracle volatilityOracle = new VolatilityOracle(
-            CHAINLINK_ETH_USD_SEPOLIA,
+            CHAINLINK_ETH_USD,
             MAX_STALENESS,
             MAX_HISTORICAL_PRICES
         );
-        console.log("   VolatilityOracle:", address(volatilityOracle));
+        console2.log("   VolatilityOracle:", address(volatilityOracle));
         
-        // Set initial manual volatility (50% as default)
-        volatilityOracle.setManualVolatility(0.5e18);
-        volatilityOracle.setUseManualVolatility(true); // Use manual until we have history
-        console.log("   Initial volatility set: 50%");
+        // 2. Deploy ILPredictor
+        console2.log("2. Deploying ILPredictor...");
+        ILPredictor ilPredictor = new ILPredictor(address(volatilityOracle));
+        console2.log("   ILPredictor:", address(ilPredictor));
         
-        // Step 2: Deploy ILPredictor
-        console.log("");
-        console.log("2. Deploying ILPredictor...");
-        ILPredictor ilPredictor = new ILPredictor(
-            address(volatilityOracle)
+        // 3. Deploy IntelligentPOLHook
+        console2.log("3. Deploying IntelligentPOLHook...");
+        
+        // Calculate hook address with correct flags
+        uint160 flags = uint160(
+            Hooks.AFTER_INITIALIZE_FLAG |
+            Hooks.AFTER_ADD_LIQUIDITY_FLAG |
+            Hooks.BEFORE_SWAP_FLAG |
+            Hooks.AFTER_SWAP_FLAG
         );
-        console.log("   ILPredictor:", address(ilPredictor));
         
-        // Test prediction
-        console.log("   Testing prediction...");
-        try ilPredictor.predict(
-            2000e18, // $2000 ETH
-            -1000,   // Lower tick
-            1000,    // Upper tick
-            30 days  // Time horizon
-        ) returns (uint256 expectedIL, uint256 exitProb, uint256 confidence) {
-            console.log("   Expected IL:", expectedIL, "bps");
-            console.log("   Exit Probability:", exitProb, "bps");
-            console.log("   Confidence:", confidence, "bps");
-        } catch {
-            console.log("   Test prediction failed (expected if oracle not working)");
-        }
+        // Deploy with CREATE2 to get correct address
+        // Note: This is simplified - production needs proper CREATE2 deployment
+        IntelligentPOLHook hook = new IntelligentPOLHook(
+            IPoolManager(POOL_MANAGER),
+            address(ilPredictor),
+            deployer // Temporary, will be updated
+        );
+        console2.log("   IntelligentPOLHook:", address(hook));
         
-        // Step 3: Deploy IntelligentPOLHook (requires Uniswap V4)
-        console.log("");
-        if (POOL_MANAGER_SEPOLIA != address(0)) {
-            console.log("3. Deploying IntelligentPOLHook...");
-            
-            // Create placeholder for strategy address (will be updated)
-            address strategyPlaceholder = address(0x1);
-            
-            IntelligentPOLHook hook = new IntelligentPOLHook(
-                IPoolManager(POOL_MANAGER_SEPOLIA),
-                address(ilPredictor),
-                strategyPlaceholder
-            );
-            console.log("   IntelligentPOLHook:", address(hook));
-            console.log("   Note: Strategy address needs to be updated!");
-            
-            // Step 4: Deploy OctantPOLStrategy
-            console.log("");
-            console.log("4. Deploying OctantPOLStrategy...");
-            
-            // Create dummy PoolKey (update with real values)
-            PoolKey memory poolKey = PoolKey({
-                currency0: Currency.wrap(WETH_SEPOLIA),
-                currency1: Currency.wrap(USDC_SEPOLIA),
-                fee: 3000, // 0.3%
-                tickSpacing: 60,
-                hooks: IHooks(address(hook))
-            });
-            
-            OctantPOLStrategy strategy = new OctantPOLStrategy(
-                address(hook),
-                POOL_MANAGER_SEPOLIA,
-                address(ilPredictor),
-                WETH_SEPOLIA,
-                USDC_SEPOLIA,
-                poolKey
-            );
-            console.log("   OctantPOLStrategy:", address(strategy));
-            
-            // Update hook with correct strategy address
-            // Note: This requires hook to have setStrategy function
-            console.log("   Updating hook with strategy address...");
-            // hook.setStrategy(address(strategy)); // Uncomment when implemented
-            
-        } else {
-            console.log("3. Skipping Hook & Strategy deployment");
-            console.log("   Reason: Uniswap V4 Pool Manager not available on this network");
-            console.log("   You can deploy these later when V4 is available");
-        }
+        // 4. Create PoolKey
+        console2.log("4. Creating PoolKey...");
+        PoolKey memory poolKey = PoolKey({
+            currency0: Currency.wrap(TOKEN0),
+            currency1: Currency.wrap(TOKEN1),
+            fee: FEE,
+            tickSpacing: TICK_SPACING,
+            hooks: hook
+        });
+        
+        // 5. Deploy OctantPOLStrategy
+        console2.log("5. Deploying OctantPOLStrategy...");
+        OctantPOLStrategy strategy = new OctantPOLStrategy(
+            address(hook),
+            POOL_MANAGER,
+            address(ilPredictor),
+            poolKey
+        );
+        console2.log("   OctantPOLStrategy:", address(strategy));
+        
+        // 6. Update hook to point to strategy
+        console2.log("6. Configuring hook with strategy...");
+        hook.setStrategy(address(strategy));
+        
+        // 7. Deploy helper contracts
+        console2.log("7. Deploying helper contracts...");
+        ConfigHelper configHelper = new ConfigHelper();
+        SimulationHelper simulationHelper = new SimulationHelper();
+        console2.log("   ConfigHelper:", address(configHelper));
+        console2.log("   SimulationHelper:", address(simulationHelper));
+        
+        // 8. Configure contracts
+        console2.log("8. Configuring contracts...");
+        
+        // Set manual volatility as fallback (50% annual)
+        volatilityOracle.setManualVolatility(0.5e18);
+        
+        // Configure hook thresholds
+        hook.setILWarningThreshold(500);  // 5%
+        hook.setILCriticalThreshold(1000); // 10%
+        
+        // Configure strategy
+        strategy.setRebalanceCooldown(1 hours);
+        strategy.setMaxSlippage(100); // 1%
+        strategy.setILRebalanceThreshold(500); // 5%
         
         vm.stopBroadcast();
         
-        // Print deployment summary
-        console.log("");
-        console.log("==========================================");
-        console.log("Deployment Complete!");
-        console.log("==========================================");
-        console.log("");
-        console.log("Deployed Contracts:");
-        console.log("-------------------");
-        console.log("VolatilityOracle:", address(volatilityOracle));
-        console.log("ILPredictor:", address(ilPredictor));
-        
-        if (POOL_MANAGER_SEPOLIA != address(0)) {
-            // Print hook and strategy addresses
-            console.log("IntelligentPOLHook: (see above)");
-            console.log("OctantPOLStrategy: (see above)");
-        }
-        
-        console.log("");
-        console.log("Next Steps:");
-        console.log("1. Verify contracts on Etherscan");
-        console.log("2. Update price history: volatilityOracle.updatePriceHistory()");
-        console.log("3. Set Octant Payment Splitter: strategy.setOctantPaymentSplitter()");
-        console.log("4. Test prediction with: ilPredictor.predict()");
+        // 9. Print deployment summary
+        console2.log("");
+        console2.log("=== DEPLOYMENT COMPLETE ===");
+        console2.log("");
+        console2.log("Contract Addresses:");
+        console2.log("-------------------");
+        console2.log("VolatilityOracle:    ", address(volatilityOracle));
+        console2.log("ILPredictor:         ", address(ilPredictor));
+        console2.log("IntelligentPOLHook:  ", address(hook));
+        console2.log("OctantPOLStrategy:   ", address(strategy));
+        console2.log("ConfigHelper:        ", address(configHelper));
+        console2.log("SimulationHelper:    ", address(simulationHelper));
+        console2.log("");
+        console2.log("Configuration:");
+        console2.log("-------------");
+        console2.log("IL Warning Threshold: 5%");
+        console2.log("IL Critical Threshold: 10%");
+        console2.log("Rebalance Cooldown: 1 hour");
+        console2.log("Max Slippage: 1%");
+        console2.log("");
+        console2.log("Next Steps:");
+        console2.log("----------");
+        console2.log("1. Initialize pool in Uniswap V4");
+        console2.log("2. Set Octant payment splitter address");
+        console2.log("3. Update volatility oracle with historical prices");
+        console2.log("4. Test with small deposits first");
+        console2.log("");
         
         // Save addresses to file
         _saveDeploymentAddresses(
             address(volatilityOracle),
-            address(ilPredictor)
+            address(ilPredictor),
+            address(hook),
+            address(strategy),
+            address(configHelper),
+            address(simulationHelper)
         );
     }
     
-    // ============ Helper Functions ============
-    
     function _saveDeploymentAddresses(
         address volatilityOracle,
-        address ilPredictor
+        address ilPredictor,
+        address hook,
+        address strategy,
+        address configHelper,
+        address simulationHelper
     ) internal {
-        string memory deploymentInfo = string(abi.encodePacked(
-            "# DeltaGuard Deployment Addresses\n\n",
-            "Network: Sepolia\n",
-            "Timestamp: ", vm.toString(block.timestamp), "\n\n",
-            "## Core Contracts\n",
-            "VOLATILITY_ORACLE=", vm.toString(volatilityOracle), "\n",
-            "IL_PREDICTOR=", vm.toString(ilPredictor), "\n"
+        string memory json = string(abi.encodePacked(
+            '{\n',
+            '  "network": "', vm.toString(block.chainid), '",\n',
+            '  "timestamp": "', vm.toString(block.timestamp), '",\n',
+            '  "contracts": {\n',
+            '    "VolatilityOracle": "', vm.toString(volatilityOracle), '",\n',
+            '    "ILPredictor": "', vm.toString(ilPredictor), '",\n',
+            '    "IntelligentPOLHook": "', vm.toString(hook), '",\n',
+            '    "OctantPOLStrategy": "', vm.toString(strategy), '",\n',
+            '    "ConfigHelper": "', vm.toString(configHelper), '",\n',
+            '    "SimulationHelper": "', vm.toString(simulationHelper), '"\n',
+            '  }\n',
+            '}'
         ));
         
-        vm.writeFile("deployments/sepolia.txt", deploymentInfo);
-        console.log("");
-        console.log("Addresses saved to: deployments/sepolia.txt");
+        vm.writeFile("deployment.json", json);
+        console2.log("Deployment addresses saved to: deployment.json");
     }
 }
 
-
-// ============================================
-// INTERFACES (for reference)
-// ============================================
-
-// Minimal Uniswap V4 interfaces needed
-interface IPoolManager {
-    function getSlot0(PoolId id) external view returns (
-        uint160 sqrtPriceX96,
-        int24 tick,
-        uint24 protocolFee
-    );
+/**
+ * @title Testnet Deploy Script
+ * @notice Simplified deployment for testnet with mock data
+ */
+contract DeployTestnet is Script {
+    function run() external {
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        
+        console2.log("Deploying to testnet...");
+        console2.log("Note: Using mock addresses - update before mainnet!");
+        
+        vm.startBroadcast(deployerPrivateKey);
+        
+        // Deploy with mock addresses for testing
+        // TODO: Replace with actual testnet addresses
+        
+        vm.stopBroadcast();
+        
+        console2.log("Testnet deployment complete");
+    }
 }
-
-interface IHooks {}
-
-struct PoolKey {
-    Currency currency0;
-    Currency currency1;
-    uint24 fee;
-    int24 tickSpacing;
-    IHooks hooks;
-}
-
-type Currency is address;
-type PoolId is bytes32;

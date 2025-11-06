@@ -29,6 +29,12 @@
       "rev": "280fc5f77e1b21b9c54013aac51966be33f4a410"
     }
   },
+  "lib/uniswap-hooks": {
+    "tag": {
+      "name": "v1.1.0",
+      "rev": "e59fe72c110c3862eec9b332530dce49ca506bbb"
+    }
+  },
   "lib/v4-core": {
     "tag": {
       "name": "v4.0.0",
